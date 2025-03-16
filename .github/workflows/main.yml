@@ -22,6 +22,13 @@ jobs:
         curl -L -o flyway-commandline.tar.gz "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.1.0/flyway-commandline-11.1.0-linux-x64.tar.gz"
         tar -xzf flyway-commandline.tar.gz
         sudo ln -s \`pwd\`/flyway-11.1.0/flyway /usr/local/bin/flyway
+
+    - name: Debug Flyway Installation
+      run: |
+        ls -l /usr/local/flyway
+        ls -l /usr/local/bin/flyway
+        echo "PATH: $PATH"
+
     - name: Run Flyway migrations
       run: |
         flyway migrate -configFiles="flyway.conf"
