@@ -15,10 +15,11 @@ jobs:
       run: |
         curl -L -o flyway-commandline.tar.gz "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.1.0/flyway-commandline-11.1.0-linux-x64.tar.gz"
         tar -xzf flyway-commandline.tar.gz
+        sudo mv flyway-11.1.0 /usr/local/flyway
         sudo ln -s \`pwd\`/flyway-11.1.0/flyway /usr/local/bin/flyway
     - name: Run Flyway migrations
       run: |
-        /usr/local/bin/flyway/flyway migrate -configFiles="flyway.conf"
+        flyway migrate -configFiles="flyway.conf"
     ### Этот шаг оставьте без изменений
     - name: Download and setup autotests binaries
       run: |
