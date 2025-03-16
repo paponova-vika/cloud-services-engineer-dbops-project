@@ -20,8 +20,13 @@ jobs:
     - name: Install Flyway
       run: |
         curl -L -o flyway-commandline.tar.gz "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.1.0/flyway-commandline-11.1.0-linux-x64.tar.gz"
-        tar -xzf flyway-commandline.tar.gz
-        sudo ln -s \`pwd\`/flyway-11.1.0/flyway /usr/local/bin/flyway
+        tar -xzf flyway-commandline.tar.gz || { echo "Flyway extraction failed!"; exit 1; }
+        ls -l
+        sudo mv flyway-11.1.0 /usr/local/flyway || { echo "Moving Flyway failed!"; exit 1; }
+        sudo ln -s /usr/local/flyway/flyway /usr/local/bin/flyway || { echo "Symlink creation failed!"; exit 1; }
+        echo "/usr/local/bin" >> $GITHUB_PATH
+
+        echo "Flyway installation completed!"
 
     - name: Debug Flyway Installation
       run: |
