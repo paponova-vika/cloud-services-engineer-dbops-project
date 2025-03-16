@@ -18,7 +18,7 @@ jobs:
         sudo ln -s \`pwd\`/flyway-11.1.0/flyway /usr/local/bin/flyway
     - name: Run Flyway migrations
       run: |
-        /usr/local/bin/flyway migrate -configFiles="flyway.conf"
+        /usr/local/bin/flyway/flyway migrate -configFiles="flyway.conf"
     ### Этот шаг оставьте без изменений
     - name: Download and setup autotests binaries
       run: |
