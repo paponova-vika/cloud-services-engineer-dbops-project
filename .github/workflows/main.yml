@@ -10,13 +10,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    #### Добавьте шаг с Flyway-миграциями
-      ### Устанавливаем JDK, который нужен для запуска Flyway
+    ### Устанавливаем JDK, который нужен для запуска Flyway
     - name: Set up JDK
       uses: actions/setup-java@v2
       with:
         distribution: 'liberica'
         java-version: '17'
+
+    #### Добавьте шаг с Flyway-миграциями
     - name: Install Flyway
       run: |
         curl -L -o flyway-commandline.tar.gz "https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/11.1.0/flyway-commandline-11.1.0-linux-x64.tar.gz"
@@ -24,19 +25,15 @@ jobs:
         ls -l
         sudo mv flyway-11.1.0 /usr/local/flyway || { echo "Moving Flyway failed!"; exit 1; }
         sudo ln -s /usr/local/flyway/flyway /usr/local/bin/flyway || { echo "Symlink creation failed!"; exit 1; }
-        echo "/usr/local/bin" >> $GITHUB_PATH
-
         echo "Flyway installation completed!"
 
-    - name: Debug Flyway Installation
-      run: |
-        ls -l /usr/local/flyway
-        ls -l /usr/local/bin/flyway
-        echo "PATH: $PATH"
-
     - name: Run Flyway migrations
+      env:
+        FLYWAY_URL: "jdbc:postgresql://${{ secrets.DB_HOST }}:${{ secrets.DB_PORT }}/${{ secrets.DB_NAME }}"
+        FLYWAY_USER: ${{ secrets.DB_USER }}
+        FLYWAY_PASSWORD: ${{ secrets.DB_PASSWORD }}
       run: |
-        flyway migrate -configFiles="flyway.conf"
+        flyway migrate -locations=filesystem:migrations
 
     ### Этот шаг оставьте без изменений
     - name: Download and setup autotests binaries
